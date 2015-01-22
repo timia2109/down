@@ -45,7 +45,12 @@ function _.import(pImp)
 end
 
 function _.wget(pURL, tPost, tHeader) 
-	local req
+	local req, url
+	if pURL:sub(1,3) == "pb:"
+		url = "http://pastebin.com/raw.php?i="..pUrl
+	else
+		url = pURL
+	end
 	if tPost then
 		local post = ""
 		for i,v in pairs(tPost) do
@@ -82,6 +87,9 @@ function _.meta(pTable, pMeta)
 end
 
 function _.putFile(pFile, pContent)
+	if _.isTable(pContent) then
+		pContent = _.serialize(pContent)
+	end
 	local f = fs.open(pFile, "w")
 	f.write(pContent)
 	f.close()
@@ -167,7 +175,15 @@ end
 
 local dT = {"Number","String","Boolean","Table","Function","Nil"}
 for i,v in pairs(dT)
-	_["is"..v] = function(g) return type(g) == v:lower() end
+	_["is"..v] = function( ... )
+		local h = { ... }
+		for i,vf in pairs(h) do
+			if type(vf) ~= v:lower() then
+				return false
+			end
+		end 
+		return true
+	end
 end
 
 function _.isEmpty(g)
@@ -182,6 +198,36 @@ end
 function _.isset(pVal, pDo)
 	if pVal ~= nil then
 		pDo()
+	end
+end
+
+function _.equals(p1,p2)
+	if type(p1) == type(p2) then
+		if _.isString(p1,p2) then
+			return p1:lower() == p2:lower()
+		elseif _.isNumber(p1,p2) then
+			return p1 == p2
+		end
+	else
+		error("p1 and p2 are not the same type")
+	end
+end
+
+function _.extents(pObj, pFind)
+	if _.isString(pObj) then
+		for i,v in pairs(pTable) do
+			if not string.find(pFind, v) then
+				return false
+			end
+		end
+		return true
+	elseif _.isTable(pObj) then
+		for i,v in pairs(pObj) do
+			if v == pObj then
+				return true,i
+			end
+		end
+		return false
 	end
 end
 
@@ -213,3 +259,19 @@ function _.config(pName, pIfNotExists)
 	
 	return t
 end
+
+function _.serialize(pTable, pType)
+	if _.equals(pType, "json") then
+		--json
+		--tbd
+	else
+		--Lua
+		return textutils.serialite(pTable)
+	end
+end
+_.serialise = _.serialize
+
+function _.unserialize(pTable, pType)
+
+end
+_.unserialise = _.unserialize
