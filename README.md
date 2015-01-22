@@ -2,10 +2,9 @@
 Like jQuery for ComputerCraft. Use _ instead of $. Communtiy based so fork and create pull request.
 
 ## Usage:
-```lua
---Load down
+`--Load down
 dofile("down.lua")()
-````
+`
 
 ## Methods
 |Name|return|Desc|
@@ -30,10 +29,29 @@ dofile("down.lua")()
 |_.isNumber(mixed val)|boolean|Self explain|
 |_.isNil(mixed val)|boolean|Self explain|
 |_.isFunction(mixed val)|boolean|Self explain|
+|_.serialize(table Table, [string **format**])|string|Serialize the table into a string|
+|_.unserialize(string Value, [string **format**]["lua"])|table|Create a table from the string|
+
+## Down StringTypes
+When a Parameter is written bold then you must use a allowed String. 
+Example:
+_.serialize(table pTable, string **format**)
+`Lua
+--Use:
+_.serialize( { ... } , "json")
+`
+
+**format:**
+ - json
+ - lua
+ 
+**url**
+ -
+
 
 ## Examples
-### _.is*()
-```Lua
+#### _.is*()
+`Lua
 _.isTable({}) --true
 _.isTable(0) --false
 _.isString("") --true
@@ -41,13 +59,13 @@ _.isString(0) --false
 _.isNumber(0) --true
 _.isFunction(_.isNumber) -true
 _.isFunction(_.isNumber(0)) --false
-```
+`
 
-### _.isEmpty()
-```Lua
+#### _.isEmpty()
+`Lua
 _.isEmpty({}) --true
 _.isEmpty( { 1 } ) --false
 _.isEmpty( "" ) --true
 _.isEmpty( "nope" ) --false
 _.isEmpty() --true
-```
+`
