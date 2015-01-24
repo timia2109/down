@@ -2,7 +2,7 @@
 Like jQuery for ComputerCraft. Use _ instead of $. Communtiy based so fork and create pull request.
 
 ## Usage:
-`Lua
+```Lua
 if not _ then
 	if fs.exists("/down") then
 		dofile("/down")()
@@ -14,7 +14,8 @@ if not _ then
 		shell.run(shell.getRunningProgram())
 		shell.exit()
 	end
-end`
+end
+```
 
 ## Methods
 |Name|return|Desc|
@@ -46,10 +47,10 @@ end`
 When a Parameter is written bold then you must use a allowed String. 
 Example:
 _.serialize(table pTable, string **format**)
-`Lua
+```Lua
 --Use:
 _.serialize( { ... } , "json")
-`
+```
 
 **format:**
  - json
@@ -61,7 +62,7 @@ _.serialize( { ... } , "json")
 
 ## Examples
 #### _.is*()
-`Lua
+```Lua
 _.isTable({}) --true
 _.isTable(0) --false
 _.isString("") --true
@@ -69,13 +70,13 @@ _.isString(0) --false
 _.isNumber(0) --true
 _.isFunction(_.isNumber) -true
 _.isFunction(_.isNumber(0)) --false
-`
+```
 
 #### _.isEmpty()
-`Lua
+```Lua
 _.isEmpty({}) --true
 _.isEmpty( { 1 } ) --false
 _.isEmpty( "" ) --true
 _.isEmpty( "nope" ) --false
 _.isEmpty() --true
-`
+```
