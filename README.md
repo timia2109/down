@@ -2,7 +2,7 @@
 Like jQuery for ComputerCraft. Use _ instead of $. Communtiy based so fork and create pull request.
 
 ## Usage:
-`lua
+`Lua
 if not _ then
 	if fs.exists("/down") then
 		dofile("/down")()
@@ -14,8 +14,7 @@ if not _ then
 		shell.run(shell.getRunningProgram())
 		shell.exit()
 	end
-end
-`
+end`
 
 ## Methods
 |Name|return|Desc|
