@@ -2,8 +2,19 @@
 Like jQuery for ComputerCraft. Use _ instead of $. Communtiy based so fork and create pull request.
 
 ## Usage:
-`--Load down
-dofile("down.lua")()
+`lua
+if not _ then
+	if fs.exists("/down") then
+		dofile("/down")()
+	else
+		local req = http.get("https://raw.github.com/timia2109/down/master/down.lua")
+		local f = fs.open("down","w")
+		f.write(req.readAll())
+		f.close()
+		shell.run(shell.getRunningProgram())
+		shell.exit()
+	end
+end
 `
 
 ## Methods
