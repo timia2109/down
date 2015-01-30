@@ -21,9 +21,12 @@ end
 
 function string.exec(self,pFenv)
 	local fenv
-	if pFenv then fenv = pFenv
-	else fenv = _G end
-	return a,b = pcall(setfenv(loadstring(self),fenv))
+	if pFenv then 
+		fenv = pFenv 
+	else 
+		fenv = _G 
+	end
+	return pcall(setfenv(loadstring(self),fenv))
 end	
 
 function string.split(self, pattern)
@@ -45,51 +48,54 @@ function _.import(pImp)
 end
 
 function _.wget( ... )
-	local arg,use = { ... },{}
+	local arg = { ... }
+	local useT = {}
 	local req, url, tPost, tHeader
 	
 	if #arg > 1 then
-		use.url = arg[1]
-		use.post = arg[2]
-		use.header = arg[3]
+		useT.url = arg[1]
+		useT.post = arg[2]
+		useT.header = arg[3]
 	else
-		use = arg[1]
+		useT = arg[1]
 	end
 	
-	function use.getUrl(self)
-		if self.get and _.isTable(self.get) then
-			local r = self.url.."?"
-			for i,v in ipairs(self.get) do
+	function useT.getUrl()
+		if useT.get and _.isTable(useT.get) then
+			local r = useT.url.."?"
+			for i,v in ipairs(useT.get) do
 				r = r..i.."="..v.."&"
 			end
 			return r
 		else
-			return self.url
+			return useT.url
 		end
 	end
 	
-	if pURL:sub(1,3) == "pb:"
-		url = "http://pastebin.com/raw.php?i="..url
+	if useT.url:sub(1,3) == "pb:" then
+		useT.url = "http://pastebin.com/raw.php?i="..useT.url
 	end
 	
-	if use.post then
+	if useT.post then
 		local post = ""
 		for i,v in pairs(use.post) do
 			post = post..i.."="..v.."&"
 		end
-		req = http.post(use:getUrl(), post, use.header)
+		req = http.post(useT.getUrl(), post, useT.header)
 	else
-		req = http.get(use:getUrl(), use.header)
+		req = http.get(useT.getUrl(), useT.header)
 	end
 	if req then
 		return req.readAll()
 	else
-		error("Can't load '"..pURL.." maybe whitelist?",0)
+		error("Can't load '"..useT.url.." maybe whitelist?",0)
 	end
 end
 
 function _.dloadFile(pURL, pSave)
-	local req = _.wget(pURL)
+	local req = _.wget{
+		["url"] = pURL
+	}
 	_.putFile(pSave,req)
 end
 
@@ -148,7 +154,7 @@ function _.cloneTable(pTable, inTable, pJustIf)
 		justIf = function() return true end
 	end
 	
-	for i,v in pairs(pTable)
+	for i,v in pairs(pTable) do
 		if justIf(i,v) then
 			if _.isTable(v) then
 				r[i] = _.cloneTable(v)
@@ -195,7 +201,7 @@ function _.checkVersion(v1, v2)
 end
 
 local dT = {"Number","String","Boolean","Table","Function","Nil"}
-for i,v in pairs(dT)
+for i,v in pairs(dT) do
 	_["is"..v] = function( ... )
 		local h = { ... }
 		for i,vf in pairs(h) do
