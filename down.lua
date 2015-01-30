@@ -44,21 +44,42 @@ function _.import(pImp)
 	end
 end
 
-function _.wget(pURL, tPost, tHeader) 
-	local req, url
-	if pURL:sub(1,3) == "pb:"
-		url = "http://pastebin.com/raw.php?i="..pUrl
+function _.wget( ... )
+	local arg,use = { ... },{}
+	local req, url, tPost, tHeader
+	
+	if #arg > 1 then
+		use.url = arg[1]
+		use.post = arg[2]
+		use.header = arg[3]
 	else
-		url = pURL
+		use = arg[1]
 	end
-	if tPost then
+	
+	function use.getUrl(self)
+		if self.get and _.isTable(self.get) then
+			local r = self.url.."?"
+			for i,v in ipairs(self.get) do
+				r = r..i.."="..v.."&"
+			end
+			return r
+		else
+			return self.url
+		end
+	end
+	
+	if pURL:sub(1,3) == "pb:"
+		url = "http://pastebin.com/raw.php?i="..url
+	end
+	
+	if use.post then
 		local post = ""
-		for i,v in pairs(tPost) do
+		for i,v in pairs(use.post) do
 			post = post..i.."="..v.."&"
 		end
-		req = http.post(pURL,post, tHeader)
+		req = http.post(use:getUrl(), post, use.header)
 	else
-		req = http.get(pURL)
+		req = http.get(use:getUrl(), use.header)
 	end
 	if req then
 		return req.readAll()
