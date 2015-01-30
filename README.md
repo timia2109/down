@@ -1,11 +1,12 @@
 # down
 Like jQuery for ComputerCraft. Use _ instead of $. Communtiy based so fork and create pull request.
+MUST BE LOADED WITH shell.run("/down")
 
 ## Usage:
 ```Lua
 if not _ then
 	if fs.exists("/down") then
-		dofile("/down")()
+		shell.run("/down")
 	else
 		local req = http.get("https://raw.github.com/timia2109/down/master/down.lua")
 		local f = fs.open("down","w")
@@ -21,7 +22,7 @@ end
 |Name|return|Desc|
 |---|---|---|
 |_.import(table pImport)|nil|Import the methods of pImport into _(down)|
-|_.wget(string pUrl, [table pPost], [table pHeader])|string|Start a request to pUrl and return the content|
+|_.wget(string pUrl|table **wget**, [table pPost], [table pHeader])|string|Start a request to pUrl and return the content|
 |_.dloadFile(string pUrl, string pFile)|nil|Download the url and put it in pFile|
 |_.execUrl(string pUrl, [table fenv] or [_G])|return value of code|
 |_.meta(table pTable, [table pMetatable])|table|return metatable of pTable and if pMetatable set new metatable|
@@ -58,6 +59,26 @@ _.serialize( { ... } , "json")
  
 **url**
  -
+
+**wget**
+```lua
+--wTable example
+local wTable = {
+	url = "http://example.com", 	--The request URL
+	post = { 			--Table for the HTTP Post Parameters
+		key = value,
+		token = "12345"		--Example Value
+	},
+	get = {				--Table for URL
+		key = value,
+		data = "lua"		--Result: "http://example.com?data=lua& <- The last & dosn't matter
+	}
+	header = {			--HTTP Headers
+		key = value,
+		User-Agent = "CC",	--Normal your Browser Identy
+	}
+}
+``` 
 
 
 ## Examples
