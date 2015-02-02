@@ -125,7 +125,10 @@ end
 function _.getFile(pFile)
 	if fs.exists(pFile) then
 		local f = fs.open(pFile,"r")
-		local r = fs.readAll()
+		local r = f.readAll()
+		if r:sub(1,1) == "{" and r:sub(r:len(), r:len() ) == "}" then
+			r = _.unserialize(r)
+		end
 		f.close()
 		return r
 	else
@@ -175,6 +178,9 @@ function _.api(pName,pUrl)
 	else
 		_.dloadFile(pUrl,"apis/"..pName)
 		lPath = "apis/"..pName
+		if not fs.exists("apis") then
+			fs.makeDir("apis")
+		end
 	end
 	os.loadAPI(lPath)
 end
@@ -236,7 +242,7 @@ function _.equals(p1,p2)
 			return p1 == p2
 		end
 	else
-		error("p1 and p2 are not the same type")
+		error("p1 and p2 are not the same type ("..type(p1)..", "..type(p2)..")")
 	end
 end
 
@@ -288,17 +294,21 @@ function _.config(pName, pIfNotExists)
 end
 
 function _.serialize(pTable, pType)
-	if _.equals(pType, "json") then
+	--if _.equals(pType, "json") then
 		--json
 		--tbd
-	else
+	--else
 		--Lua
-		return textutils.serialite(pTable)
-	end
+		return textutils.serialize(pTable)
+	--end
 end
 _.serialise = _.serialize
 
 function _.unserialize(pTable, pType)
+	if pType == "json" then
 
+	else
+		return textutils.unserialize( pTable )
+	end
 end
 _.unserialise = _.unserialize
