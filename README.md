@@ -43,6 +43,8 @@ end
 |_.isFunction(mixed val)|boolean|Self explain|
 |_.serialize(table Table, [string **format**])|string|Serialize the table into a string|
 |_.unserialize(string Value, [string **format**]["lua"])|table|Create a table from the string|
+|_.newClass(string Name, table class, [table Mainclass]|nil|Creates a new Class from a Table|
+|new.<CLASSNAME>(<CLASS ARGS>)|table/class|Create a new Object of a Class|
 
 ## Down StringTypes
 When a Parameter is written bold then you must use a allowed String. 
