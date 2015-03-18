@@ -103,3 +103,18 @@ _.isEmpty( "" ) --true
 _.isEmpty( "nope" ) --false
 _.isEmpty() --true
 ```
+
+#### Class
+```Lua
+local testClass = {}
+function testClass.init(self, pAttribute)
+	self.attribute = pAttribute
+end
+function testClass.sayHey(self)
+	print("Hello "..self['attribute'].."!")
+end
+
+_.newClass("testClass",testClass)
+local test = new.testClass("World")
+test.sayHey()
+-> "Hello World!"
