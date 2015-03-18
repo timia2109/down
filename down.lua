@@ -11,7 +11,9 @@
 _ = {}
 down = _
 
+--Down Constants
 _.build = 1
+_.errors = true
 
 
 --Extra string methods
@@ -32,6 +34,17 @@ end
 function string.split(self, pattern)
 
 end
+
+--Down internal functions
+	__ = {}
+
+
+	function __.error( ... )
+		if term.isColor then term.setTextColor( colors.red ) end
+		print(...)
+		term.setTextColor( colors.white )
+	end
+--Real Down Functions
 
 function _.import(pImp)
 	if _.isTable(pImp) then
@@ -234,6 +247,12 @@ function _.isset(pVal, pDo)
 	end
 end
 
+function _.mustBe(pV, pT)
+	if type(pV) ~= pT then
+		__.error("Var must be a "..pV..". Gets a "..type(pV))
+	end 
+end
+
 function _.equals(p1,p2)
 	if type(p1) == type(p2) then
 		if _.isString(p1,p2) then
@@ -312,3 +331,61 @@ function _.unserialize(pTable, pType)
 	end
 end
 _.unserialise = _.unserialize
+
+
+function _.newClass(pName, pTable, pMainClass)
+	if not _G.class then
+		_G.class = {}
+		_G.new = {}
+		local function idx(pT, pSearch)
+			if class[pSearch] then
+				return function( ... )
+					local self = {}
+					setmetatable(self, {["__index"] = class[pSearch]} )
+					class[pSearch].init( self, ... )
+					return self
+				end
+			else
+				return function()
+					return false
+				end
+			end
+		end
+		setmetatable(_G.new, {["__index"] = idx} )
+	end
+	
+	class[pName] = pTable
+	class[pName].__className = pName
+		
+	if pMainClass then
+		class[pName].super = function()
+			class[pName].__tree = pMainClass.__tree.."/"..class[pName].__tree
+			for i,v in pairs(pMainClass) do
+				if i ~= "init" and not class[pName][i] then
+					class[pName] = v
+				end
+			end
+		end
+	else
+		class[pName].__tree = "downObject"
+	end
+end
+
+function _.newClassFromString(pStr)
+	--TBD
+end
+
+function _.importClass(pFile)
+	_.newClassFromString( _.getFile( pFile ) )
+end
+
+function _.isObject(pV)
+	return pV.__tree:sub(1,5) == "downO" 
+end
+
+function _.isA(pWhat, pObj)
+	return pObj.__class == pWhat
+end
+
+_G._Object = {}
+_Object.__tree = "downObject"
