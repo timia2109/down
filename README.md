@@ -1,8 +1,8 @@
 # down
 Like jQuery for ComputerCraft. Use _ instead of $. 
 ##### What can _ and for what is it?
-down [_] has the same intent like jQuery. It just should be SHORT.
-Let me show you how short down [_] can be:
+down has the same intent like jQuery. It just should be SHORT.
+Let me show you how short down can be:
 **Load serialized table**
 ```lua
 -- Normal way:
@@ -110,8 +110,8 @@ end
 |_.dloadFile(string pUrl, string pFile)|nil|Download the url and put it in pFile|
 |_.execUrl(string pUrl, [table fenv] or [_G])|return value of code|
 |_.meta(table pTable, [table pMetatable])|table|return metatable of pTable and if pMetatable set new metatable|
-|_.putFile(string filename, string content)|nil|Save content into filename|
-|_.getFile(string filename)|string/false|Get content of filename|
+|_.putFile(string filename, mixed content)|nil|Save content into filename. Auto-serialize!|
+|_.getFile(string filename)|(string|table)/false|Get content of filename. Auto-unserialize|
 |_.addToFile(string filename, string add, [boolean newLine])|boolean|Add *add* to *filename*. If *newLine* then it add "\n" before that|
 |_.cloneTable(table pTable, [table into], [function if])|table|Copy *pTable* into the *return* table or into the *into* table. If *if* then only copy if it return true|
 |_.api(string apiname, string url)|nil|Load the API *apiname*, if not exists it will downloaded|
@@ -125,8 +125,13 @@ end
 |_.isNumber(mixed val)|boolean|Self explain|
 |_.isNil(mixed val)|boolean|Self explain|
 |_.isFunction(mixed val)|boolean|Self explain|
+|_.isObject(table Table)|boolean|return true when it's a child of _Object|
+|_.isA(string Classname, obj Object)|boolean|return true when it is a Object of the class Classname|
+|_.isAttr(string Attr)|boolean|Return true when Attr is not defined by down's classmanagment|
 |_.serialize(table Table, [string **format**])|string|Serialize the table into a string|
 |_.unserialize(string Value, [string **format**]["lua"])|table|Create a table from the string|
+|_.sortField(table Table, string Field)|table|Sort the table with Selection Sort. table[i].field must be a number|
+
 |_.newClass(string Name, table class, [table Mainclass]|nil|Creates a new Class from a Table|
 |new.*CLASSNAME*(*CLASS ARGS*)|table/class|Create a new Object of a Class|
 
