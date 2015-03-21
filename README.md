@@ -1,20 +1,104 @@
 # down
-Like jQuery for ComputerCraft. Use _ instead of $. Communtiy based so fork and create pull request.
-MUST BE LOADED WITH shell.run("/down")
+Like jQuery for ComputerCraft. Use _ instead of $. 
+##### What can _ and for what is it?
+down [_] has the same intent like jQuery. It just should be SHORT.
+Let me show you how short down [_] can be:
+**Load serialized table**
+```lua
+-- Normal way:
+local file = fs.open("filename","r")
+local data = textutils.unserialize( file.readAll() )
+file.close()
+-- -> 3 Lines
+-- Let's make it in down
+local data = _.getFile("filename")
+```
+**Use APIs**
+```lua
+-- Normal way:
+if fs.exists("apis/api") then
+	os.loadAPI("apis/api")
+else
+	local request = http.get("http://apiurl")
+	if request then
+		local file = fs.open("apis/api","w")
+		file.write( request.readAll() )
+		file.close()
+		request.close()
+		os.loadAPI("apis/api")
+	else
+		error("API not found! Error on downloading API!")
+	end
+end
+-- And now with down:
+_.loadAPI("api","http://apiurl")
+```
+**OOP with Lua**
+(as example a simple button)
+```lua
+-- Normal:
+local function newButton( pX, pY, pLen, pLabel, pCol)
+	local button = {
+		x = pX,
+		y = pY,
+		label = pLabel,
+		len = pLen,
+		color = pCol
+	}
+	local metaButton = {}
+	function metaButton.draw(self)
+		paintutils.drawLine( self.x, self.y, self.x+self.len, self.y, self.color)
+		term.setCursorPos(self.x, self.y)
+		write(self.label)
+	end
+	function metaButton.isClicked(self, pX, pY)
+		return pY == self.y and self.x <= pX and self.x+self.len >= pX
+	end
+	setmetatable(button, {__index=metaButton})
+	return button
+end
+local button = newButton(1,1,5,"Hallo", colors.red)
+button:draw()
+-- With down:
+local button = {}
+function button.init(self, pX, pY, pLen, pLabel, pCol)
+	self.x = pX
+	self.y = pY
+	self.len = pLen
+	self.label = pLabel
+	self.color = pCol 
+end
+function button.draw(self)
+	paintutils.drawLine( self.x, self.y, self.x+self.len, self.y, self.color)
+	term.setCursorPos(self.x, self.y)
+	write(self.label)	
+end
+function button.isClicked(self, pX, pY)
+	return pY == self.y and self.x <= pX and self.x+self.len >= pX
+end
+_.newClass("Button",button)
+local button = new.Button(1,2,8,"down [_]",colors.blue) --All Objects can be created with new.OBJECTNAME( args )
+button:draw()
+```
+You also can create Sub-Classes with down!
 
+Is that enouth to use down?
+##### Want more functions?
+down is communtiy based, so fork and create a pull request. And if it work, then I will include it!
+##### Can I use it in my OS?
+Shure feel free to use down! But I recommend, that you not copy down, let it load from this repo so you ever have the newest version!
+##### How I load down?
+down MUST BE LOADED WITH shell.run("/down"), because it use _G
 ## Usage:
 ```Lua
 if not _ then
-	if fs.exists("/down") then
-		shell.run("/down")
-	else
+	if not fs.exists("/down") then
 		local req = http.get("https://raw.github.com/timia2109/down/master/down.lua")
 		local f = fs.open("down","w")
 		f.write(req.readAll())
 		f.close()
-		shell.run(shell.getRunningProgram())
-		shell.exit()
 	end
+	shell.run("/down")
 end
 ```
 
