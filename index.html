@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="UTF-8">
+    <title>Down by timia2109</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="stylesheets/normalize.css" media="screen">
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
+  </head>
+  <body>
+    <section class="page-header">
+      <h1 class="project-name">Down</h1>
+      <h2 class="project-tagline">Like jQuery for ComputerCraft. Use _ instead of $. Communtiy based so fork and create pull request.</h2>
+      <a href="https://github.com/timia2109/down" class="btn">View on GitHub</a>
+      <a href="https://github.com/timia2109/down/zipball/master" class="btn">Download .zip</a>
+      <a href="https://github.com/timia2109/down/tarball/master" class="btn">Download .tar.gz</a>
+    </section>
+
+    <section class="main-content">
+      <h1>
+<a id="down" class="anchor" href="#down" aria-hidden="true"><span class="octicon octicon-link"></span></a>down</h1>
+
+<p>Like jQuery for ComputerCraft. Use _ instead of $. </p>
+
+<h5>
+<a id="what-can-_-and-for-what-is-it" class="anchor" href="#what-can-_-and-for-what-is-it" aria-hidden="true"><span class="octicon octicon-link"></span></a>What can _ and for what is it?</h5>
+
+<p>down has the same intent like jQuery. It just should be SHORT.
+Let me show you how short down can be:
+<strong>Load serialized table</strong></p>
+
+<div class="highlight highlight-lua"><pre><span class="pl-c">-- Normal way:</span>
+<span class="pl-k">local</span> file <span class="pl-k">=</span> fs.<span class="pl-c1">open</span>(<span class="pl-s"><span class="pl-pds">"</span>filename<span class="pl-pds">"</span></span>,<span class="pl-s"><span class="pl-pds">"</span>r<span class="pl-pds">"</span></span>)
+<span class="pl-k">local</span> data <span class="pl-k">=</span> textutils.<span class="pl-c1">unserialize</span>( file.<span class="pl-c1">readAll</span>() )
+file.<span class="pl-c1">close</span>()
+<span class="pl-c">-- -&gt; 3 Lines</span>
+<span class="pl-c">-- Let's make it in down</span>
+<span class="pl-k">local</span> data <span class="pl-k">=</span> _.<span class="pl-c1">getFile</span>(<span class="pl-s"><span class="pl-pds">"</span>filename<span class="pl-pds">"</span></span>)</pre></div>
+
+<p><strong>Use APIs</strong></p>
+
+<div class="highlight highlight-lua"><pre><span class="pl-c">-- Normal way:</span>
+<span class="pl-k">if</span> fs.<span class="pl-c1">exists</span>(<span class="pl-s"><span class="pl-pds">"</span>apis/api<span class="pl-pds">"</span></span>) <span class="pl-k">then</span>
+    os.<span class="pl-c1">loadAPI</span>(<span class="pl-s"><span class="pl-pds">"</span>apis/api<span class="pl-pds">"</span></span>)
+<span class="pl-k">else</span>
+    <span class="pl-k">local</span> request <span class="pl-k">=</span> http.<span class="pl-c1">get</span>(<span class="pl-s"><span class="pl-pds">"</span>http://apiurl<span class="pl-pds">"</span></span>)
+    <span class="pl-k">if</span> request <span class="pl-k">then</span>
+        <span class="pl-k">local</span> file <span class="pl-k">=</span> fs.<span class="pl-c1">open</span>(<span class="pl-s"><span class="pl-pds">"</span>apis/api<span class="pl-pds">"</span></span>,<span class="pl-s"><span class="pl-pds">"</span>w<span class="pl-pds">"</span></span>)
+        file.<span class="pl-c1">write</span>( request.<span class="pl-c1">readAll</span>() )
+        file.<span class="pl-c1">close</span>()
+        request.<span class="pl-c1">close</span>()
+        os.<span class="pl-c1">loadAPI</span>(<span class="pl-s"><span class="pl-pds">"</span>apis/api<span class="pl-pds">"</span></span>)
+    <span class="pl-k">else</span>
+        <span class="pl-c1">error</span>(<span class="pl-s"><span class="pl-pds">"</span>API not found! Error on downloading API!<span class="pl-pds">"</span></span>)
+    <span class="pl-k">end</span>
+<span class="pl-k">end</span>
+<span class="pl-c">-- And now with down:</span>
+_.<span class="pl-c1">loadAPI</span>(<span class="pl-s"><span class="pl-pds">"</span>api<span class="pl-pds">"</span></span>,<span class="pl-s"><span class="pl-pds">"</span>http://apiurl<span class="pl-pds">"</span></span>)</pre></div>
+
+<p><strong>OOP with Lua</strong>
+(as example a simple button)</p>
+
+<div class="highlight highlight-lua"><pre><span class="pl-c">-- Normal:</span>
+<span class="pl-k">local</span> <span class="pl-k">function</span> <span class="pl-en">newButton</span>(<span class="pl-smi"> pX, pY, pLen, pLabel, pCol</span>)
+    <span class="pl-k">local</span> button <span class="pl-k">=</span> {
+        x <span class="pl-k">=</span> pX,
+        y <span class="pl-k">=</span> pY,
+        label <span class="pl-k">=</span> pLabel,
+        len <span class="pl-k">=</span> pLen,
+        color <span class="pl-k">=</span> pCol
+    }
+    <span class="pl-k">local</span> metaButton <span class="pl-k">=</span> {}
+    <span class="pl-k">function</span> <span class="pl-en">metaButton.</span><span class="pl-en">draw</span>(<span class="pl-smi">self</span>)
+        paintutils.<span class="pl-c1">drawLine</span>( <span class="pl-v">self</span>.<span class="pl-smi">x</span>, <span class="pl-v">self</span>.<span class="pl-smi">y</span>, <span class="pl-v">self</span>.<span class="pl-smi">x</span><span class="pl-k">+</span><span class="pl-v">self</span>.<span class="pl-smi">len</span>, <span class="pl-v">self</span>.<span class="pl-smi">y</span>, <span class="pl-v">self</span>.<span class="pl-smi">color</span>)
+        term.<span class="pl-c1">setCursorPos</span>(<span class="pl-v">self</span>.<span class="pl-smi">x</span>, <span class="pl-v">self</span>.<span class="pl-smi">y</span>)
+        <span class="pl-c1">write</span>(<span class="pl-v">self</span>.<span class="pl-smi">label</span>)
+    <span class="pl-k">end</span>
+    <span class="pl-k">function</span> <span class="pl-en">metaButton.</span><span class="pl-en">isClicked</span>(<span class="pl-smi">self, pX, pY</span>)
+        <span class="pl-k">return</span> pY <span class="pl-k">==</span> <span class="pl-v">self</span>.<span class="pl-smi">y</span> <span class="pl-k">and</span> <span class="pl-v">self</span>.<span class="pl-smi">x</span> <span class="pl-k">&lt;=</span> pX <span class="pl-k">and</span> <span class="pl-v">self</span>.<span class="pl-smi">x</span><span class="pl-k">+</span><span class="pl-v">self</span>.<span class="pl-smi">len</span> <span class="pl-k">&gt;=</span> pX
+    <span class="pl-k">end</span>
+    <span class="pl-c1">setmetatable</span>(button, {__index<span class="pl-k">=</span>metaButton})
+    <span class="pl-k">return</span> button
+<span class="pl-k">end</span>
+<span class="pl-k">local</span> button <span class="pl-k">=</span> <span class="pl-c1">newButton</span>(<span class="pl-c1">1</span>,<span class="pl-c1">1</span>,<span class="pl-c1">5</span>,<span class="pl-s"><span class="pl-pds">"</span>Hallo<span class="pl-pds">"</span></span>, colors.<span class="pl-smi">red</span>)
+button:<span class="pl-c1">draw</span>()
+<span class="pl-c">-- With down:</span>
+<span class="pl-k">local</span> button <span class="pl-k">=</span> {}
+<span class="pl-k">function</span> <span class="pl-en">button.</span><span class="pl-en">init</span>(<span class="pl-smi">self, pX, pY, pLen, pLabel, pCol</span>)
+    <span class="pl-v">self</span>.<span class="pl-smi">x</span> <span class="pl-k">=</span> pX
+    <span class="pl-v">self</span>.<span class="pl-smi">y</span> <span class="pl-k">=</span> pY
+    <span class="pl-v">self</span>.<span class="pl-smi">len</span> <span class="pl-k">=</span> pLen
+    <span class="pl-v">self</span>.<span class="pl-smi">label</span> <span class="pl-k">=</span> pLabel
+    <span class="pl-v">self</span>.<span class="pl-smi">color</span> <span class="pl-k">=</span> pCol 
+<span class="pl-k">end</span>
+<span class="pl-k">function</span> <span class="pl-en">button.</span><span class="pl-en">draw</span>(<span class="pl-smi">self</span>)
+    paintutils.<span class="pl-c1">drawLine</span>( <span class="pl-v">self</span>.<span class="pl-smi">x</span>, <span class="pl-v">self</span>.<span class="pl-smi">y</span>, <span class="pl-v">self</span>.<span class="pl-smi">x</span><span class="pl-k">+</span><span class="pl-v">self</span>.<span class="pl-smi">len</span>, <span class="pl-v">self</span>.<span class="pl-smi">y</span>, <span class="pl-v">self</span>.<span class="pl-smi">color</span>)
+    term.<span class="pl-c1">setCursorPos</span>(<span class="pl-v">self</span>.<span class="pl-smi">x</span>, <span class="pl-v">self</span>.<span class="pl-smi">y</span>)
+    <span class="pl-c1">write</span>(<span class="pl-v">self</span>.<span class="pl-smi">label</span>)   
+<span class="pl-k">end</span>
+<span class="pl-k">function</span> <span class="pl-en">button.</span><span class="pl-en">isClicked</span>(<span class="pl-smi">self, pX, pY</span>)
+    <span class="pl-k">return</span> pY <span class="pl-k">==</span> <span class="pl-v">self</span>.<span class="pl-smi">y</span> <span class="pl-k">and</span> <span class="pl-v">self</span>.<span class="pl-smi">x</span> <span class="pl-k">&lt;=</span> pX <span class="pl-k">and</span> <span class="pl-v">self</span>.<span class="pl-smi">x</span><span class="pl-k">+</span><span class="pl-v">self</span>.<span class="pl-smi">len</span> <span class="pl-k">&gt;=</span> pX
+<span class="pl-k">end</span>
+_.<span class="pl-c1">newClass</span>(<span class="pl-s"><span class="pl-pds">"</span>Button<span class="pl-pds">"</span></span>,button)
+<span class="pl-k">local</span> button <span class="pl-k">=</span> new.<span class="pl-c1">Button</span>(<span class="pl-c1">1</span>,<span class="pl-c1">2</span>,<span class="pl-c1">8</span>,<span class="pl-s"><span class="pl-pds">"</span>down [_]<span class="pl-pds">"</span></span>,colors.<span class="pl-smi">blue</span>) <span class="pl-c">--All Objects can be created with new.OBJECTNAME( args )</span>
+button:<span class="pl-c1">draw</span>()</pre></div>
+
+<p>You also can create Sub-Classes with down!</p>
+
+<p>Is that enouth to use down?</p>
+
+<h5>
+<a id="want-more-functions" class="anchor" href="#want-more-functions" aria-hidden="true"><span class="octicon octicon-link"></span></a>Want more functions?</h5>
+
+<p>down is communtiy based, so fork and create a pull request. And if it work, then I will include it!</p>
+
+<h5>
+<a id="can-i-use-it-in-my-os" class="anchor" href="#can-i-use-it-in-my-os" aria-hidden="true"><span class="octicon octicon-link"></span></a>Can I use it in my OS?</h5>
+
+<p>Shure feel free to use down! But I recommend, that you not copy down, let it load from this repo so you ever have the newest version!</p>
+
+<h5>
+<a id="how-i-load-down" class="anchor" href="#how-i-load-down" aria-hidden="true"><span class="octicon octicon-link"></span></a>How I load down?</h5>
+
+<p>down MUST BE LOADED WITH shell.run("/down"), because it use _G</p>
+
+<h2>
+<a id="usage" class="anchor" href="#usage" aria-hidden="true"><span class="octicon octicon-link"></span></a>Usage:</h2>
+
+<div class="highlight highlight-Lua"><pre><span class="pl-k">if</span> <span class="pl-k">not</span> _ <span class="pl-k">then</span>
+    <span class="pl-k">if</span> <span class="pl-k">not</span> fs.<span class="pl-c1">exists</span>(<span class="pl-s"><span class="pl-pds">"</span>/down<span class="pl-pds">"</span></span>) <span class="pl-k">then</span>
+        <span class="pl-k">local</span> req <span class="pl-k">=</span> http.<span class="pl-c1">get</span>(<span class="pl-s"><span class="pl-pds">"</span>https://raw.github.com/timia2109/down/master/down.lua<span class="pl-pds">"</span></span>)
+        <span class="pl-k">local</span> f <span class="pl-k">=</span> fs.<span class="pl-c1">open</span>(<span class="pl-s"><span class="pl-pds">"</span>down<span class="pl-pds">"</span></span>,<span class="pl-s"><span class="pl-pds">"</span>w<span class="pl-pds">"</span></span>)
+        f.<span class="pl-c1">write</span>(req.<span class="pl-c1">readAll</span>())
+        f.<span class="pl-c1">close</span>()
+    <span class="pl-k">end</span>
+    shell.<span class="pl-c1">run</span>(<span class="pl-s"><span class="pl-pds">"</span>/down<span class="pl-pds">"</span></span>)
+<span class="pl-k">end</span></pre></div>
+
+<h2>
+<a id="methods" class="anchor" href="#methods" aria-hidden="true"><span class="octicon octicon-link"></span></a>Methods</h2>
+
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>return</th>
+<th>Desc</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>_.import(table pImport)</td>
+<td>nil</td>
+<td>Import the methods of pImport into _(down)</td>
+</tr>
+<tr>
+<td>_.wget(string pUrl</td>
+<td>table <strong>wget</strong>, [table pPost], [table pHeader])</td>
+<td>string</td>
+</tr>
+<tr>
+<td>_.dloadFile(string pUrl, string pFile)</td>
+<td>nil</td>
+<td>Download the url and put it in pFile</td>
+</tr>
+<tr>
+<td>_.execUrl(string pUrl, [table fenv] or [_G])</td>
+<td>return value of code</td>
+<td></td>
+</tr>
+<tr>
+<td>_.meta(table pTable, [table pMetatable])</td>
+<td>table</td>
+<td>return metatable of pTable and if pMetatable set new metatable</td>
+</tr>
+<tr>
+<td>_.putFile(string filename, mixed content)</td>
+<td>nil</td>
+<td>Save content into filename. Auto-serialize!</td>
+</tr>
+<tr>
+<td>_.getFile(string filename)</td>
+<td>(string</td>
+<td>table)/false</td>
+</tr>
+<tr>
+<td>_.addToFile(string filename, string add, [boolean newLine])</td>
+<td>boolean</td>
+<td>Add <em>add</em> to <em>filename</em>. If <em>newLine</em> then it add "\n" before that</td>
+</tr>
+<tr>
+<td>_.cloneTable(table pTable, [table into], [function if])</td>
+<td>table</td>
+<td>Copy <em>pTable</em> into the <em>return</em> table or into the <em>into</em> table. If <em>if</em> then only copy if it return true</td>
+</tr>
+<tr>
+<td>_.api(string apiname, string url)</td>
+<td>nil</td>
+<td>Load the API <em>apiname</em>, if not exists it will downloaded</td>
+</tr>
+<tr>
+<td>_.checkVersion(string version1, string version2)</td>
+<td>number</td>
+<td>return 0 if <em>v1</em> and <em>v2</em> are equal. return <em>1</em> if <em>v1</em> is newer, return <em>2</em> if <em>v2</em> is newer <code>v1 = "1.3443.464.06.4"</code>
+</td>
+</tr>
+<tr>
+<td>_.isset(boolean if, function do)</td>
+<td>nil</td>
+<td>If <em>if</em> == true then exec <em>do</em>
+</td>
+</tr>
+<tr>
+<td>_.config(string pName)</td>
+<td>table (configObject)</td>
+<td>Load a config table</td>
+</tr>
+<tr>
+<td>_.isEmpty(mixed pVal)</td>
+<td>boolean</td>
+<td>See examples to watch how it works</td>
+</tr>
+<tr>
+<td>_.isTable(mixed val)</td>
+<td>boolean</td>
+<td>Self explain</td>
+</tr>
+<tr>
+<td>_.isBoolean(mixed val)</td>
+<td>boolean</td>
+<td>Self explain</td>
+</tr>
+<tr>
+<td>_.isString(mixed val)</td>
+<td>boolean</td>
+<td>Self explain</td>
+</tr>
+<tr>
+<td>_.isNumber(mixed val)</td>
+<td>boolean</td>
+<td>Self explain</td>
+</tr>
+<tr>
+<td>_.isNil(mixed val)</td>
+<td>boolean</td>
+<td>Self explain</td>
+</tr>
+<tr>
+<td>_.isFunction(mixed val)</td>
+<td>boolean</td>
+<td>Self explain</td>
+</tr>
+<tr>
+<td>_.isObject(table Table)</td>
+<td>boolean</td>
+<td>return true when it's a child of _Object</td>
+</tr>
+<tr>
+<td>_.isA(string Classname, obj Object)</td>
+<td>boolean</td>
+<td>return true when it is a Object of the class Classname</td>
+</tr>
+<tr>
+<td>_.isAttr(string Attr)</td>
+<td>boolean</td>
+<td>Return true when Attr is not defined by down's classmanagment</td>
+</tr>
+<tr>
+<td>_.serialize(table Table, [string <strong>format</strong>])</td>
+<td>string</td>
+<td>Serialize the table into a string</td>
+</tr>
+<tr>
+<td>_.unserialize(string Value, [string <strong>format</strong>]["lua"])</td>
+<td>table</td>
+<td>Create a table from the string</td>
+</tr>
+<tr>
+<td>_.sortField(table Table, string Field)</td>
+<td>table</td>
+<td>Sort the table with Selection Sort. table[i].field must be a number</td>
+</tr>
+</tbody>
+</table>
+
+<p>|_.newClass(string Name, table class, [table Mainclass]|nil|Creates a new Class from a Table|
+|new.<em>CLASSNAME</em>(<em>CLASS ARGS</em>)|table/class|Create a new Object of a Class|</p>
+
+<h2>
+<a id="down-stringtypes" class="anchor" href="#down-stringtypes" aria-hidden="true"><span class="octicon octicon-link"></span></a>Down StringTypes</h2>
+
+<p>When a Parameter is written bold then you must use a allowed String. 
+Example:
+_.serialize(table pTable, string <strong>format</strong>)</p>
+
+<div class="highlight highlight-Lua"><pre><span class="pl-c">--Use:</span>
+_.<span class="pl-c1">serialize</span>( { <span class="pl-c1">...</span> } , <span class="pl-s"><span class="pl-pds">"</span>json<span class="pl-pds">"</span></span>)</pre></div>
+
+<p><strong>format:</strong></p>
+
+<ul>
+<li>json</li>
+<li>lua</li>
+</ul>
+
+<p><strong>url</strong>
+ -</p>
+
+<p><strong>wget</strong></p>
+
+<div class="highlight highlight-lua"><pre><span class="pl-c">--wTable example</span>
+<span class="pl-k">local</span> wTable <span class="pl-k">=</span> {
+    url <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">"</span>http://example.com<span class="pl-pds">"</span></span>,     <span class="pl-c">--The request URL</span>
+    post <span class="pl-k">=</span> {            <span class="pl-c">--Table for the HTTP Post Parameters</span>
+        key <span class="pl-k">=</span> value,
+        token <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">"</span>12345<span class="pl-pds">"</span></span>     <span class="pl-c">--Example Value</span>
+    },
+    get <span class="pl-k">=</span> {             <span class="pl-c">--Table for URL</span>
+        key <span class="pl-k">=</span> value,
+        data <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">"</span>lua<span class="pl-pds">"</span></span>        <span class="pl-c">--Result: "http://example.com?data=lua&amp; &lt;- The last &amp; dosn't matter</span>
+    }
+    header <span class="pl-k">=</span> {          <span class="pl-c">--HTTP Headers</span>
+        key <span class="pl-k">=</span> value,
+        User<span class="pl-k">-</span>Agent <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">"</span>CC<span class="pl-pds">"</span></span>,  <span class="pl-c">--Normal your Browser Identy</span>
+    }
+}</pre></div>
+
+<h2>
+<a id="examples" class="anchor" href="#examples" aria-hidden="true"><span class="octicon octicon-link"></span></a>Examples</h2>
+
+<h4>
+<a id="_is" class="anchor" href="#_is" aria-hidden="true"><span class="octicon octicon-link"></span></a>_.is*()</h4>
+
+<div class="highlight highlight-Lua"><pre>_.<span class="pl-c1">isTable</span>({}) <span class="pl-c">--true</span>
+_.<span class="pl-c1">isTable</span>(<span class="pl-c1">0</span>) <span class="pl-c">--false</span>
+_.<span class="pl-c1">isString</span>(<span class="pl-s"><span class="pl-pds">"</span><span class="pl-pds">"</span></span>) <span class="pl-c">--true</span>
+_.<span class="pl-c1">isString</span>(<span class="pl-c1">0</span>) <span class="pl-c">--false</span>
+_.<span class="pl-c1">isNumber</span>(<span class="pl-c1">0</span>) <span class="pl-c">--true</span>
+_.<span class="pl-c1">isFunction</span>(_.<span class="pl-smi">isNumber</span>) <span class="pl-k">-</span><span class="pl-c1">true</span>
+_.<span class="pl-c1">isFunction</span>(_.<span class="pl-c1">isNumber</span>(<span class="pl-c1">0</span>)) <span class="pl-c">--false</span></pre></div>
+
+<h4>
+<a id="_isempty" class="anchor" href="#_isempty" aria-hidden="true"><span class="octicon octicon-link"></span></a>_.isEmpty()</h4>
+
+<div class="highlight highlight-Lua"><pre>_.<span class="pl-c1">isEmpty</span>({}) <span class="pl-c">--true</span>
+_.<span class="pl-c1">isEmpty</span>( { <span class="pl-c1">1</span> } ) <span class="pl-c">--false</span>
+_.<span class="pl-c1">isEmpty</span>( <span class="pl-s"><span class="pl-pds">"</span><span class="pl-pds">"</span></span> ) <span class="pl-c">--true</span>
+_.<span class="pl-c1">isEmpty</span>( <span class="pl-s"><span class="pl-pds">"</span>nope<span class="pl-pds">"</span></span> ) <span class="pl-c">--false</span>
+_.<span class="pl-c1">isEmpty</span>() <span class="pl-c">--true</span></pre></div>
+
+<h4>
+<a id="class" class="anchor" href="#class" aria-hidden="true"><span class="octicon octicon-link"></span></a>Class</h4>
+
+<div class="highlight highlight-Lua"><pre><span class="pl-k">local</span> testClass <span class="pl-k">=</span> {}
+<span class="pl-k">function</span> <span class="pl-en">testClass.</span><span class="pl-en">init</span>(<span class="pl-smi">self, pAttribute</span>)
+    <span class="pl-v">self</span>.<span class="pl-smi">attribute</span> <span class="pl-k">=</span> pAttribute
+<span class="pl-k">end</span>
+<span class="pl-k">function</span> <span class="pl-en">testClass.</span><span class="pl-en">sayHey</span>(<span class="pl-smi">self</span>)
+    <span class="pl-c1">print</span>(<span class="pl-s"><span class="pl-pds">"</span>Hello <span class="pl-pds">"</span></span><span class="pl-k">..</span><span class="pl-v">self</span>[<span class="pl-s"><span class="pl-pds">'</span>attribute<span class="pl-pds">'</span></span>]<span class="pl-k">..</span><span class="pl-s"><span class="pl-pds">"</span>!<span class="pl-pds">"</span></span>)
+<span class="pl-k">end</span>
+
+_.<span class="pl-c1">newClass</span>(<span class="pl-s"><span class="pl-pds">"</span>testClass<span class="pl-pds">"</span></span>,testClass)
+<span class="pl-k">local</span> test <span class="pl-k">=</span> new.<span class="pl-c1">testClass</span>(<span class="pl-s"><span class="pl-pds">"</span>World<span class="pl-pds">"</span></span>)
+test.<span class="pl-c1">sayHey</span>()
+<span class="pl-k">-&gt;</span> <span class="pl-s"><span class="pl-pds">"</span>Hello World!<span class="pl-pds">"</span></span></pre></div>
+
+      <footer class="site-footer">
+        <span class="site-footer-owner"><a href="https://github.com/timia2109/down">Down</a> is maintained by <a href="https://github.com/timia2109">timia2109</a>.</span>
+
+        <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the <a href="https://github.com/jasonlong/cayman-theme">Cayman theme</a> by <a href="https://twitter.com/jasonlong">Jason Long</a>.</span>
+      </footer>
+
+    </section>
+
+  
+  </body>
+</html>
+
